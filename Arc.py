@@ -5,4 +5,4 @@ class Arc:
 		self.id = id
 	
 	def __str__(self):
-		return ""+str(id)+","+str(i)+","+str(j)
+		return ""+str(self.id)+","+str(self.i)+","+str(self.j)

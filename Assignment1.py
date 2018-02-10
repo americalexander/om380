@@ -22,13 +22,19 @@ def q2(leaders, arcs):
 	while len(informed) < unselected/2:	#While less than half of unselected users are informed
 		chosen = leaders.get()[1]	#Pick the next most influential individual
 		selected[chosen] = True
-		if chosen in informed:	#If they could have been informed by a more influential user
-			del informed[chosen]	#Remove them from the informed list
-		unselected -= 1	#One fewer person can be informed
 		
+		count = 0
 		for arc in arcs.jNodes[chosen]:	#For each person that trusts this user
-			if arc.i not in selected:	#If they are not selected
+			if arc.i not in selected and arc.i not in informed:	#If they are not selected or already informed
 				informed[arc.i] = True	#They become informed
+				count += 1
+		
+		if count > 0:
+			if chosen in informed:	#If they could have been informed by a more influential user
+				del informed[chosen]	#Remove them from the informed list
+			unselected -= 1	#One fewer person can be informed
+		else:
+			del selected[chosen]	#don't actually select this user
 	return selected
 
 def q3(list, rev0):

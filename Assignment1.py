@@ -1,8 +1,9 @@
 #!/usr/bin/env python
 from ArcReader import ArcReader
+import queue
 import sys
 import time
-import queue
+import multiprocessing
 
 def q1(list):
 	q = queue.PriorityQueue()	#Keep a leaderboard of trust
@@ -43,8 +44,24 @@ def q3(list, rev0):
 	
 	return tt40, ttt, (float(len(informed))/75289)
 
-def q4():
-	pass
+def q4(list, pc, timeout):
+	cc = queue.PriorityQueue()
+	for node in list.nodes.keys():
+		neighbors = list.nodes[node]
+		if len(neighbors) <= 1:
+			cc.put((0.0, node))
+		else:
+			count = 0
+			for n in neighbors:
+				for m in neighbors:
+					if m in list.nodes[n]:
+						count += 1
+					if (time.perf_counter() - pc) > timeout:
+						return cc
+			c = float(count)/(len(neighbors)*(len(neighbors)-1))
+			cc.put((-c, node))
+		if (time.perf_counter() - pc) > timeout:
+			return cc
 
 
 def main():
@@ -52,16 +69,16 @@ def main():
 		print("Usage: ./Assignment1 TrustNetwork.txt")
 		return
 	r = ArcReader(sys.argv[1])
-	array, list = r.read()
+	array, arcList, nodeList = r.read()
 	
 	## Question 1
 	t0 = time.perf_counter()
-	maxTrust = q1(list)
+	maxTrust = q1(arcList)
 	t1 = time.perf_counter()
 	
 	print("MOST TRUSTED INDIVIDUALS")
 	for tuple in maxTrust:
-		print("Individual "+str(tuple[1]))
+		print("User "+str(tuple[1]))
 	
 	print("Q1 Time: %s\tseconds\n" % str(t1-t0))
 	
@@ -73,7 +90,7 @@ def main():
 	
 	## Question 3
 	t2 = time.perf_counter()
-	tt40, ttt, iff = q3(list, [maxTrust[0][1]])
+	tt40, ttt, iff = q3(arcList, [maxTrust[0][1]])
 	t3 = time.perf_counter()
 	
 	print("INFORMATION PROPAGATION")
@@ -84,8 +101,19 @@ def main():
 	
 	## Question 4
 	t3 = time.perf_counter()
-	q4()
+	cc = q4(nodeList, t3, 120)
 	t4 = time.perf_counter()
+	ci = 0
+	for i in range(5):
+		k = cc.get()
+		k = (-k[0],k[1])
+		print(k)
+		ci += k[0]
+	count = 5
+	while not cc.empty():
+		ci -= cc.get()[0]
+		count += 1
+	print("Average clustering coefficient: %4f" % (float(ci)/count))
 	print("Q4 Time: %s\tseconds" % str(t4-t3))
 
 

@@ -13,8 +13,8 @@ class FlightReader:
 			flight = Flight(int(args[0]),#ID \
 				args[2], #orig \
 				args[3], #dest \
-				args[5], #dep \
-				args[7], #arr \
+				int(args[5]), #dep \
+				int(args[7]), #arr \
 				bool(int(args[8])), #canceled \
 				int(args[9]) #seats \
 			)

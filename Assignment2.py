@@ -4,6 +4,18 @@ from ItineraryReader import ItineraryReader as IReader
 import sys
 import time
 
+def mapNetwork(flights, itins):
+	arrs = dict()
+	deps = dict()
+	for flight in flights:
+		da = deps.get(flight.orig, [])
+		aa = arrs.get(flight.dest, [])
+		da.append(flight)
+		aa.append(flight)
+		deps[flight.orig] = da
+		arrs[flight.dest] = aa
+	
+
 def main():
 	if len(sys.argv) < 3:
 		print("Usage: ./Assignment2 flightFile itinFile")
@@ -18,16 +30,11 @@ def main():
 	minLTime = 0
 	
 	t0 = time.perf_counter()
-	#read flight and itinerary data
+	#read flight and itinerary data, set up network, net out capacity
 	fr = FReader(sys.argv[1])
 	ir = IReader(sys.argv[2])
-	flights = fr.read()
-	itins = ir.read(flights)
-	
-	#TODO: set up network here
-	
-	#TODO: net capacity usage for unaffected passengers here
-	
+	flights, deps, sinks = fr.read()
+	itins = ir.read(flights, deps, sinks)
 	t1 = time.perf_counter()
 	
 	#TODO: sort itineraries by departure time here

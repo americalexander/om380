@@ -1,10 +1,12 @@
-class Flight:
-	def __init__(self, id, orig, dest, start, end, canceled, seats):
+from Arc import Arc
+from Nodes import StartNode, EndNode
+class Flight(Arc):
+	def __init__(self, id, orig, dest, canceled, seats):
+		assert orig.__class__ == StartNode
+		assert dest.__class__ == EndNode
 		self.id = id
-		self.orig = orig
-		self.dest = dest
-		self.startTime = start
-		self.endTime = end
+		self.i = orig
+		self.j = dest
 		self.canceled = canceled
 		self.seats = seats
 	
@@ -13,11 +15,19 @@ class Flight:
 			status = "CANCELD"
 		else:
 			status = "ON TIME"
-		return "Flgt %d\tOrig %s\tDest %s\tDept %d\tArrv %d\tStat %s\tSeat %s" \
+		return "Flgt %d\tOrig %s\tDest %s\tStat %s\tSeat %s" \
 		% (self.id, \
-		self.orig, \
-		self.dest, \
-		self.startTime, \
-		self.endTime, \
+		self.i, \
+		self.j, \
+		self.i.t, \
+		self.j.t, \
 		status, \
 		self.seats)
+	
+	def cost(self):
+		return self.endTime - self.startTime
+	
+	def reduce(self,number):
+		d = self.seats - number
+		assert d >= 0
+		self.seats = d

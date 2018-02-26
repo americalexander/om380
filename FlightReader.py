@@ -6,12 +6,29 @@ class FlightReader:
 	def __init__(self, file):
 		self.f = open(file)
 	
+	def mapArcs(_,arrs,deps,sinks):
+		for airport in arrs.keys():
+			arrivals = arrs.get(airport,[])
+			departures = deps.get(airport,[])
+			for arrival in arrivals:
+				#Itinerary end arcs
+				s = sinks[airport]
+				e = TripEndArc(arrival, s)
+				arrival.outgoing.append(e)
+				s.incoming.append(e)
+				
+				#Intermediate waiting arcs
+				for departure in departures:
+					if departure.t >= arrival.t:
+						c = ConnectionArc(arrival, departure)
+						arrival.outgoing.append(c)
+						departure.incoming.append(c)
+	
 	def read(self):
 		flights = dict()
 		arrs = dict()
 		deps = dict()
 		sinks = dict()
-		
 		
 		self.f.readline()
 		line = self.f.readline()
@@ -49,20 +66,6 @@ class FlightReader:
 			line = self.f.readline()
 		self.f.close()
 		
+		self.mapArcs(arrs,deps,sinks)
 		
-		for airport in arrs.keys():
-			for arrival in arrs.get(airport, []):
-				#Itinerary end arcs
-				s = sinks[airport]
-				e = TripEndArc(arrival, s)
-				arrival.outgoing.append(e)
-				s.incoming.append(e)
-				
-				#Intermediate waiting arcs
-				for departure in deps.get(airport,[]):
-					if departure.t >= arrival.t:
-						c = ConnectionArc(arrival, departure)
-						arrival.outgoing.append(c)
-						departure.incoming.append(c)
-			
-		return flights, deps, sinks
+		return flights, deps, sinks, arrs

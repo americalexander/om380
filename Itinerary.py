@@ -1,5 +1,6 @@
 from Nodes import Node
 class Itinerary(Node):
+	count = 0
 	def __init__(self,ff,sf,passengers):
 		self.ff = ff
 		self.sf = sf
@@ -8,6 +9,7 @@ class Itinerary(Node):
 		self.t = ff.i.t
 		self.outgoing = []
 		self.incoming = []
+		Itinerary.count += 1
 	
 	def schedCost(self):
 		fc = self.ff.cost()

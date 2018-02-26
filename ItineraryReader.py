@@ -37,5 +37,5 @@ class ItineraryReader:
 				itin.ff.reduce(itin.psgrs)
 				if itin.sf != None:
 					itin.sf.reduce(itin.psgrs)
-		
+				del itin
 		return itins

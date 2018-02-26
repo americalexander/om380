@@ -1,6 +1,8 @@
 from Arc import Arc
 from Nodes import StartNode, EndNode
 class Flight(Arc):
+	fullFlights = 0
+	count = 0
 	def __init__(self, id, orig, dest, canceled, seats):
 		assert orig.__class__ == StartNode
 		assert dest.__class__ == EndNode
@@ -9,6 +11,7 @@ class Flight(Arc):
 		self.j = dest
 		self.canceled = canceled
 		self.seats = seats
+		Flight.count += 1
 	
 	def __str__(self):
 		if self.canceled:
@@ -27,7 +30,15 @@ class Flight(Arc):
 	def cost(self):
 		return self.endTime - self.startTime
 	
-	def reduce(self,number):
+	def available(self,number):
 		d = self.seats - number
-		assert d >= 0
-		self.seats = d
+		if d > 0:
+			return number
+		else:
+			return number + d
+	
+	def reduce(self,num):
+		assert num <= self.seats
+		self.seats -= num
+		if self.seats == 0:
+			Flight.fullFlights += 1

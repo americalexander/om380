@@ -16,6 +16,9 @@ class StartNode(Node):
 	
 	def __str__(self):
 		return self.j + str(self.t)
+	
+	def __gt__(self,other):
+		return self.t > other.t
 
 class EndNode(Node):
 	count = 0
@@ -28,6 +31,9 @@ class EndNode(Node):
 	
 	def __str__(self):
 		return self.j + str(self.t)
+	
+	def __gt__(self,other):
+		return self.t > other.t
 
 class SinkNode(Node):
 	count = 0
@@ -37,3 +43,9 @@ class SinkNode(Node):
 		self.outgoing = []
 		self.incoming = []
 		SinkNode.count += 1
+	
+	def __gt__(self,other):
+		return self.t > other.t
+	
+	def __str__(self):
+		return "Sink "+self.j

@@ -1,5 +1,6 @@
 from Arc import Arc
 from Nodes import StartNode, EndNode
+from sys import maxsize as infinity
 class Flight(Arc):
 	fullFlights = 0
 	count = 0
@@ -28,7 +29,9 @@ class Flight(Arc):
 		self.seats)
 	
 	def cost(self):
-		return self.endTime - self.startTime
+		if self.seats <= 0:
+			return infinity
+		return self.j.t - self.i.t
 	
 	def available(self,number):
 		d = self.seats - number

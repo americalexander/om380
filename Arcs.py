@@ -16,6 +16,9 @@ class ConnectionArc(Arc):	#Intermediate Waiting Arc (Connection)
 	
 	def available(self,num):
 		return num
+	
+	def reduce(self,num):
+		pass
 
 class TripStartArc(Arc):	#Itinerary Arrival Arc
 	count = 0
@@ -66,6 +69,15 @@ class NextDayArc(Arc):	#Next-Day Flight Arc
 	def cost(self):
 		waitCost = 24*60
 		return waitCost + self.i.schedCost()
+	
+	def costBreakdown(self):
+		tc = self.i.ff.cost()
+		wc = 24*60
+		cc = 0
+		if self.i.sf != None:
+			tc += self.i.sf.cost()
+			cc += self.i.sf.i.t - self.i.ff.j.t + 30
+		return tc, wc, cc
 	
 	def available(self,num):
 		return num

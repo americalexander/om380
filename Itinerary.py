@@ -1,7 +1,7 @@
 from Nodes import Node
 class Itinerary(Node):
 	count = 0
-	def __init__(self,ff,sf,passengers):
+	def __init__(self,ff,sf,passengers, sink):
 		self.ff = ff
 		self.sf = sf
 		self.psgrs = passengers
@@ -9,6 +9,7 @@ class Itinerary(Node):
 		self.t = ff.i.t
 		self.outgoing = []
 		self.incoming = []
+		self.sink = sink
 		Itinerary.count += 1
 	
 	def schedCost(self):
@@ -33,10 +34,11 @@ class Itinerary(Node):
 			dest = self.sf.j
 		else:
 			dest = self.ff.j
-		return "%d passenger%s\tfrom %s to %s" % (self.psgrs, s, orig, dest)
+		return "%d passenger%s\tfrom %s to %s\t%s" \
+			% (self.psgrs, s, orig, dest, self.canceled())
 	
 	def end(self):
-		if self.sf != None:
-			return self.sf.j
-		else:
-			return self.ff.j
+		return self.sink
+	
+	def __gt__(self,other):
+		return self.t > other.t

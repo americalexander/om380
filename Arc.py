@@ -1,8 +1,8 @@
 class Arc:
-	def __init__(self, id, i, j):
+	def __init__(self, i, j, capacity):
 		self.i = i
 		self.j = j
-		self.id = id
+		self.capacity = capacity
 	
 	def __str__(self):
-		return ""+str(self.id)+","+str(self.i)+","+str(self.j)
+		return ""+str(self.i)+","+str(self.j)+","+str(self.capacity)

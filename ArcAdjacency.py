@@ -3,10 +3,12 @@ class ArcAdjacencyList:
 		self.iNodes = dict()
 		self.jNodes = dict()
 	
-	def addArc(self, arc):
-		if self.iNodes.get(arc.i) == None:
-			self.iNodes[arc.i] = []
-		if self.jNodes.get(arc.j) == None:
-			self.jNodes[arc.j] = []
-		self.iNodes.get(arc.i).append(arc)
-		self.jNodes.get(arc.j).append(arc)
+	def addArc(self, i, j, c):
+		self.iNodes.setdefault(i, dict())[j] = c
+		self.jNodes.setdefault(j, dict())[i] = c
+	
+	def getOutgoing(self, node):
+		return self.iNodes[node]
+	
+	def getIncoming(self, node):
+		return self.jNodes[node]

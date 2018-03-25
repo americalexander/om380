@@ -33,9 +33,17 @@ def sap(adjList,s,t):
 	while d(s) < len(adjList) + 1:
 		hasArc = False
 		for j in adjList.getOutgoing(i):
+			pass
 			#if not admissible:
 				#continue
 			#hasArc = True
+			#advance(i)
+			#if j == t:
+				#augment()
+				#i = s
+		if not hasArc:
+			pass
+			#retreat(i)
 
 def readNetwork(file):
 	f = open(file)

@@ -11,4 +11,4 @@ class ArcAdjacencyList:
 		return self.iNodes[node]
 	
 	def getIncoming(self, node):
-		return self.jNodes[node]
+		return self.jNodes.get(node, [])

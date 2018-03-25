@@ -29,18 +29,22 @@ def sap(adjList,s,t):
 	x = 0
 	d = dists(adjList,t)
 	i = s
+	pred = dict()
 	
 	while d(s) < len(adjList) + 1:
 		hasArc = False
 		for j in adjList.getOutgoing(i):
-			pass
-			#if not admissible:
-				#continue
-			#hasArc = True
-			#advance(i)
-			#if j == t:
+			if d[i] != d[j] + 1: #if not admissible:
+				continue
+			hasArc = True
+			#advance(i, j)
+			pred[j] = i
+			i = j
+			
+			if j == t:
 				#augment()
-				#i = s
+				i = s
+			break
 		if not hasArc:
 			pass
 			#retreat(i)

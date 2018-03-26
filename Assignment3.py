@@ -30,7 +30,7 @@ def dists(adjList, t):
 def sap(adjList,s,t):
 	#Shortest Augmenting Path algorithm
 	x = 0
-	d = dists(adjList,t)
+	d = dists(adjList,t) #get exact distance labels
 	i = s
 	pred = dict()
 	arcscans = 0
@@ -38,13 +38,13 @@ def sap(adjList,s,t):
 	advances = 0
 	retreats = 0
 	
-	while d[s] < len(adjList.iNodes) + 1:
-		hasArc = False
+	while d[s] < len(adjList.iNodes) + 1: #while d(s) < n
+		hasArc = False	#condition of having an admissible arc
 		for j in adjList.getOutgoing(i):
 			arcscans += 1
 			if d[i] != d[j] + 1 or adjList.getOutgoing(i)[j] <= 0: #if not admissible:
 				continue
-			hasArc = True
+			hasArc = True	#we have found at least one admissible arc
 			
 			#advance(i, j)
 			advances += 1
@@ -57,12 +57,12 @@ def sap(adjList,s,t):
 				path = [t]
 				cur = t
 				delta = 65536
-				while cur is not s:
-					delta = min(delta, adjList.getOutgoing(pred[cur])[cur])
+				while cur is not s:	#build a path from s to t using the pred labels
+					delta = min(delta, adjList.getOutgoing(pred[cur])[cur])	#restricting flow
 					cur = pred[cur]
 					path = [cur] + path
 				x += delta
-				for i in range(1,len(path)):
+				for i in range(1,len(path)):	#shift flow from the forward arc to the reverse
 					nv = adjList.getOutgoing(path[i-1]).get(path[i], None) - delta
 					adjList.getOutgoing(path[i-1])[path[i]] = nv
 					nv = adjList.getOutgoing(path[i]).get(path[i-1], 0) + delta
@@ -75,6 +75,7 @@ def sap(adjList,s,t):
 			retreats += 1
 			tempd = 65536
 			tempj = -1
+			#get the minimum distance label possible
 			for j in adjList.getOutgoing(i):
 				arcscans += 1
 				rij = adjList.getOutgoing(i)[j]
@@ -82,9 +83,9 @@ def sap(adjList,s,t):
 					tempd = d[j]
 					tempj = j
 			tempd += 1
-			d[i] = tempd
+			d[i] = tempd	#d(i) is the min neighbor d + 1
 			if i != s:
-				i = pred[i]
+				i = pred[i]	#alter the pred mapping
 	return x, arcscans, augments, advances, retreats
 
 def readNetwork(file):
@@ -150,20 +151,23 @@ def main():
 		print("Usage: Assignment3.py MaxFlow-img.txt")
 		return 1
 	
+	#read in the network
 	filename = sys.argv[1]
 	adjList, s, t = readNetwork(filename)
 	base = copy.deepcopy(adjList)
-	tic = time.perf_counter()
-	x, arcscans, augments, advances, retreats = sap(adjList,s,t)
-
 	
-	S = reachability(adjList, s)
+	tic = time.perf_counter()	#start of shortest path algorithm
+	x, arcscans, augments, advances, retreats = sap(adjList,s,t)
+	
+	#now that we have our S/T cut created, map that into sets of nodes
+	S = reachability(adjList, s) #use the reachability algorithm (BFS)
 	T = set()
-	for node in adjList.iNodes:
+	for node in adjList.iNodes:	#every node not in S should be in T
 		if node not in S:
 			T.add(node)
 	a = calcA(S,s, base)
 	b = calcB(T,t, base)
+	#output results
 	print("Time taken: "+str(time.perf_counter() - tic))
 	print("Number of augments: "+str(augments))
 	print("Number of advances: "+str(advances))

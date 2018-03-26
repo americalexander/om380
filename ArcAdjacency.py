@@ -8,7 +8,7 @@ class ArcAdjacencyList:
 		self.jNodes.setdefault(j, dict())[i] = c
 	
 	def getOutgoing(self, node):
-		return self.iNodes[node]
+		return self.iNodes.setdefault(node,dict())
 	
 	def getIncoming(self, node):
-		return self.jNodes.get(node, [])
+		return self.jNodes.setdefault(node, dict())
